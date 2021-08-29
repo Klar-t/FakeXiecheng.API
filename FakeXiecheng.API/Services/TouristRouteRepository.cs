@@ -19,7 +19,7 @@ namespace FakeXiecheng.API.Services
         }
 
        
-        public async  Task<TouristRoute> GetTouristRoute(Guid tourisRouteId)
+        public async  Task<TouristRoute> GetTouristRouteAsync(Guid tourisRouteId)
         {
             return await _context.TouristRoutes.Include(t => t.TouristRoutePictures).FirstOrDefaultAsync(n => n.Id == tourisRouteId);
         }
@@ -80,22 +80,22 @@ namespace FakeXiecheng.API.Services
         }
 
 
-        public async void AddTouristRouteAsync(TouristRoute touristRoute)
+        public  void AddTouristRoute(TouristRoute touristRoute)
         {
             if (touristRoute==null)
             {
                 throw new ArgumentNullException(nameof(touristRoute));
             }
-            await _context.TouristRoutes.AddAsync(touristRoute);
+             _context.TouristRoutes.Add(touristRoute);
             
         }
 
-        public async Task<bool> Save()
+        public async Task<bool> SaveAsync()
         {
             return (await _context.SaveChangesAsync() >= 0);
         }
 
-        public async Task<ShoppingCart> GetShoppingCarByUserId(string userId)
+        public async Task<ShoppingCart> GetShoppingCarByUserIdAsync(string userId)
         {
             return await _context.ShoppingCarts
                 .Include(s => s.User)
@@ -105,17 +105,17 @@ namespace FakeXiecheng.API.Services
                 .FirstOrDefaultAsync();
         }
 
-        public async Task CreateShoppingCart(ShoppingCart shoppingCart)
+        public async Task CreateShoppingCartAsync(ShoppingCart shoppingCart)
         {
             await _context.ShoppingCarts.AddAsync(shoppingCart);
         }
 
-        public async  Task AddShoppingCartItem(LineItem lineItem)
+        public async  Task AddShoppingCartItemAsync(LineItem lineItem)
         {
             await _context.LineItems.AddAsync(lineItem);
         }
 
-        public async Task<LineItem> GetShoppingCartItemByItemId(int lineItemId)
+        public async Task<LineItem> GetShoppingCartItemByItemIdAsync(int lineItemId)
         {
             return await _context.LineItems
                 .Where(li => li.Id == lineItemId)

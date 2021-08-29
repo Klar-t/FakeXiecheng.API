@@ -40,7 +40,7 @@ namespace FakeXiecheng.API.Controllers
                 .FindFirst(ClaimTypes.NameIdentifier).Value;
 
             //使用userid获得购物车
-            var shoppingCart = await _touristRouteRepository.GetShoppingCarByUserId(userId);
+            var shoppingCart = await _touristRouteRepository.GetShoppingCarByUserIdAsync(userId);
 
 
             return Ok(_mapper.Map<ShoppingCartDto>(shoppingCart));
@@ -58,7 +58,7 @@ namespace FakeXiecheng.API.Controllers
                 .FindFirst(ClaimTypes.NameIdentifier).Value;
 
             //使用userid获得购物车
-            var shoppingCart = await _touristRouteRepository.GetShoppingCarByUserId(userId);
+            var shoppingCart = await _touristRouteRepository.GetShoppingCarByUserIdAsync(userId);
 
 
             //创建lineItem
