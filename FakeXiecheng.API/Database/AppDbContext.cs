@@ -24,6 +24,8 @@ namespace FakeXiecheng.API.Database
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<LineItem> LineItems { get; set; }
 
+        public DbSet<Order> Orders { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

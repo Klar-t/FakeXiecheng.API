@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FakeXiecheng.API.Dtos;
+using FakeXiecheng.API.Helper;
 using FakeXiecheng.API.Moders;
 using FakeXiecheng.API.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -88,7 +89,7 @@ namespace FakeXiecheng.API.Controllers
         public async Task<IActionResult> DeleteShoppingCartItem([FromRoute] int itemId)
         {
             //1、获取lineitem数据
-            var lineItem = await _touristRouteRepository.GetShoppingCartItemByItemId(itemId);
+            var lineItem = await _touristRouteRepository.GetShoppingCartItemByItemIdAsync(itemId);
             if (lineItem == null)
             {
                 return NotFound("购物车商品找不到");
@@ -99,20 +100,20 @@ namespace FakeXiecheng.API.Controllers
             return NoContent();
         }
 
-        //[HttpDelete("items/({itemIds})")]
-        //[Authorize(AuthenticationSchemes = "Bearer")]
-        //public async Task<IActionResult> RemoveShoppingCartItems(
-        //    [ModelBinder(BinderType =typeof(ArrayModelBinder))]
-        //    [FromRoute] IEnumerable<int> itemIds)
-        //{
-        //    var lineitems = await _touristRouteRepository
-        //        .GetShoppingCartByIdListAsync(itemIds);
+        [HttpDelete("items/({itemIds})")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> RemoveShoppingCartItems(
+            [ModelBinder(BinderType =typeof(ArrayModelBinder))]
+            [FromRoute] IEnumerable<int> itemIds)
+        {
+            var lineitems = await _touristRouteRepository
+                .GetShoppingCartByIdListAsync(itemIds);
 
-        //    _touristRouteRepository.DeleteShoppingCartItems(lineitems);
-        //    _touristRouteRepository.Save();
+            _touristRouteRepository.DeleteShoppingCartItems(lineitems);
+            await _touristRouteRepository.SaveAsync();
 
-        //    return NoContent();
-        //}
+            return NoContent();
+        }
 
 
 
