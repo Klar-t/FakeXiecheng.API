@@ -9,17 +9,17 @@ namespace FakeXiecheng.API.Services
 {
     public interface ITouristRouteRepository
     {
-        IEnumerable<TouristRoute> GetTouristRoutes(TouristRouteResourceParamaters paramaters);
+        Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(TouristRouteResourceParamaters paramaters);
 
-        TouristRoute GetTouristRoute(Guid tourisRouteId);
+        Task<TouristRoute> GetTouristRouteAsync(Guid tourisRouteId);
 
-        bool TrouristRouteExists(Guid tourisRouteId);
+        Task<bool> TrouristRouteExistsAsync(Guid tourisRouteId);
 
-        IEnumerable<TouristRoutePicture> GetPictureForTouristRoute(Guid tourisRouteId);
+        Task<IEnumerable<TouristRoutePicture>> GetPictureForTouristRouteAsync(Guid tourisRouteId);
 
-        TouristRoutePicture GetPicture(int pictureId);
+        Task<TouristRoutePicture> GetPictureAsync(int pictureId);
 
-        IEnumerable<TouristRoute> GetTouritRoutesByIDList(IEnumerable<Guid> ids);
+        Task<IEnumerable<TouristRoute>> GetTouritRoutesByIDListAsync(IEnumerable<Guid> ids);
 
 
 
@@ -49,6 +49,6 @@ namespace FakeXiecheng.API.Services
         void DeleteTouristRoutes(IEnumerable<TouristRoute> touristRoutes);
 
         void DeleteTouristRoutePicture(TouristRoutePicture picture);
-        bool Save();
+        Task<bool> SaveAsync();
     }
 }

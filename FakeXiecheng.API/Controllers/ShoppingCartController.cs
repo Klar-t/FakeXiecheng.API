@@ -62,8 +62,8 @@ namespace FakeXiecheng.API.Controllers
 
 
             //创建lineItem
-            var touristRoute =_touristRouteRepository
-                .GetTouristRoute(addShoppingCartItemDto.TouristRouteId);
+            var touristRoute =await _touristRouteRepository
+                .GetTouristRouteAsync(addShoppingCartItemDto.TouristRouteId);
             if (touristRoute == null)
             {
                 return NotFound("旅游路线不存在");
@@ -79,7 +79,7 @@ namespace FakeXiecheng.API.Controllers
 
             //添加lineItem,并保存数据库
             await _touristRouteRepository.AddShoppingCartItem(lineItem);
-             _touristRouteRepository.Save();
+            await _touristRouteRepository.SaveAsync();
 
             return Ok(_mapper.Map<ShoppingCartDto>(shoppingCart)); 
         }
@@ -94,7 +94,7 @@ namespace FakeXiecheng.API.Controllers
                 return NotFound("购物车商品找不到");
             }
             _touristRouteRepository.DeleteShoppingCartItem(lineItem);
-            _touristRouteRepository.Save();
+            await _touristRouteRepository.SaveAsync();
 
             return NoContent();
         }
