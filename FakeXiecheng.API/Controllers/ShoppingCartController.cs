@@ -79,7 +79,7 @@ namespace FakeXiecheng.API.Controllers
             };
 
             //添加lineItem,并保存数据库
-            await _touristRouteRepository.AddShoppingCartItem(lineItem);
+            await _touristRouteRepository.AddShoppingCartItemAsync(lineItem);
             await _touristRouteRepository.SaveAsync();
 
             return Ok(_mapper.Map<ShoppingCartDto>(shoppingCart)); 
