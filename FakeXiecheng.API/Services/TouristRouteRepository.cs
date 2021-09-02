@@ -137,6 +137,27 @@ namespace FakeXiecheng.API.Services
         {
             _context.LineItems.RemoveRange(lineItems);
         }
+        public async Task AddOrderAsync(Order order)
+        {
+            await _context.Orders.AddAsync(order);
+        }
+
+
+        public async  Task<IEnumerable<Order>> GetOrderByUserId(string userId)
+        {
+           return await _context.Orders.Where(o => o.UserId == userId).ToListAsync();
+        }
+
+
+        public async Task<Order> GetOrderById(Guid orderId)
+        {
+            return await _context.Orders
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.TouristRoute)
+                .Where(o => o.Id == orderId)
+                .FirstOrDefaultAsync();
+        }
+
+
 
         public void AddTouristRoutePicture(Guid touriteRouteId, TouristRoutePicture touristRoutePicture)
         {

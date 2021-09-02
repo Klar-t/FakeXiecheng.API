@@ -43,6 +43,11 @@ namespace FakeXiecheng.API.Services
 
         void DeleteShoppingCartItems(IEnumerable<LineItem> lineItems);
 
+        Task AddOrderAsync(Order order);
+
+        Task<IEnumerable<Order>> GetOrderByUserId(string userId);
+
+        Task<Order> GetOrderById(Guid orderId);
 
         void DeleteTouristRoute(TouristRoute touristRoute);
          
