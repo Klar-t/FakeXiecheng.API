@@ -1,4 +1,5 @@
 ﻿using FakeXiecheng.API.Database;
+using FakeXiecheng.API.Helper;
 using FakeXiecheng.API.Moders;
 using FakeXiecheng.API.ResourceParameters;
 using Microsoft.EntityFrameworkCore;
@@ -24,23 +25,27 @@ namespace FakeXiecheng.API.Services
             return await _context.TouristRoutes.Include(t => t.TouristRoutePictures).FirstOrDefaultAsync(n => n.Id == tourisRouteId);
         }
 
-        public async Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(TouristRouteResourceParamaters paramaters)
+        public async Task<PaginationList<TouristRoute>> GetTouristRoutesAsync(string Keyword,
+                    string RatingOperator,
+                    int? RatingValue,
+                    int PageSize,
+                    int PageNumber)
         {
             IQueryable<TouristRoute> result= _context
                 .TouristRoutes 
                 .Include(t => t.TouristRoutePictures);
-            if (!string.IsNullOrWhiteSpace(paramaters.Keyword))
+            if (!string.IsNullOrWhiteSpace(Keyword))
             {
-                paramaters.Keyword = paramaters.Keyword.Trim();
-                result.Where(t => t.Title.Contains(paramaters.Keyword));
+                Keyword = Keyword.Trim();
+                result.Where(t => t.Title.Contains(Keyword));
             }
-            if (paramaters.RatingValue >= 0)
+            if (RatingValue >= 0)
             {
-                result = paramaters.RatingOperator switch
+                result = RatingOperator switch
                 {
-                    "largerThan" => result.Where(t => t.Rating >= paramaters.RatingValue),
-                    "lessThan" => result.Where(t => t.Rating <= paramaters.RatingValue),
-                    _ => result.Where(t => t.Rating == paramaters.RatingValue),
+                    "largerThan" => result.Where(t => t.Rating >= RatingValue),
+                    "lessThan" => result.Where(t => t.Rating <= RatingValue),
+                    _ => result.Where(t => t.Rating == RatingValue),
                 };
 
                 //switch (ratingOperator)
@@ -56,7 +61,8 @@ namespace FakeXiecheng.API.Services
                 //        break;
                 //}
             }
-            return await result.ToListAsync();
+            
+            return await PaginationList<TouristRoute>.CreateAsync(PageNumber,PageSize,result);
         }
 
         public async Task<bool> TrouristRouteExistsAsync(Guid tourisRouteId)

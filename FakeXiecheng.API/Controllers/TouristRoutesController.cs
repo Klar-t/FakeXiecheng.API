@@ -31,10 +31,23 @@ namespace FakeXiecheng.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> GetTouristRoutes([FromQuery] TouristRouteResourceParamaters paramaters)
+        [HttpHead]
+        //public async Task<IActionResult> GetTouristRoutes([FromQuery]int pagenumber,int pagesize)
+        //{
+        //     return Ok();
+        //}
+        public async Task<IActionResult> GerTouristRoutes([FromQuery] TouristRouteResourceParamaters paramaters,
+                                                          [FromQuery] PaginationResourceParamaters paramatertwo)
         {
-            var touristRoutesFromRepo = await _touristRouteRepository.GetTouristRoutesAsync(paramaters);
+
+            var touristRoutesFromRepo = await _touristRouteRepository
+                .GetTouristRoutesAsync(
+                    paramaters.Keyword,
+                    paramaters.RatingOperator,
+                    paramaters.RatingValue,
+                    paramatertwo.PageSize,
+                    paramatertwo.PageNumber
+                );
             if (touristRoutesFromRepo == null || touristRoutesFromRepo.Count() <= 0)
             {
                 return NotFound("没有旅游路线");

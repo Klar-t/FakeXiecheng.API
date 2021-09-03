@@ -105,14 +105,6 @@ namespace FakeXiecheng.API
 
             app.UseEndpoints(endpoints =>
             {
-                /*endpoints.MapGet("/test", async context =>
-                {
-                    await context.Response.WriteAsync("Hello test!");
-                });
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });*/
                 endpoints.MapControllers();
             });
         }

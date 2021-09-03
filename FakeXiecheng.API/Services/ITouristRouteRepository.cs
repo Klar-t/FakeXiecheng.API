@@ -1,4 +1,5 @@
-﻿using FakeXiecheng.API.Moders;
+﻿using FakeXiecheng.API.Helper;
+using FakeXiecheng.API.Moders;
 using FakeXiecheng.API.ResourceParameters;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,11 @@ namespace FakeXiecheng.API.Services
 {
     public interface ITouristRouteRepository
     {
-        Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(TouristRouteResourceParamaters paramaters);
+        Task<PaginationList<TouristRoute>> GetTouristRoutesAsync(string Keyword,
+                    string RatingOperator,
+                    int? RatingValue,
+                    int PageSize,
+                    int PageNumber);
 
         Task<TouristRoute> GetTouristRouteAsync(Guid tourisRouteId);
 
