@@ -25,7 +25,7 @@ namespace FakeXiecheng.API.ResourceParameters
             }
         }
 
-        private int _pageSize = 10;
+        private int _pageSize = 5;
         const int maxPageSize = 50;
         public int PageSize
         {

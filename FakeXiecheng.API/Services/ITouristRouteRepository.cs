@@ -50,7 +50,7 @@ namespace FakeXiecheng.API.Services
 
         Task AddOrderAsync(Order order);
 
-        Task<IEnumerable<Order>> GetOrderByUserId(string userId);
+        Task<PaginationList<Order>> GetOrderByUserId(string userId,int pagesize,int pagenumber);
 
         Task<Order> GetOrderById(Guid orderId);
 

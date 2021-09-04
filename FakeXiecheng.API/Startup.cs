@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Identity;
 using FakeXiecheng.API.Moders;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace FakeXiecheng.API
 {
@@ -86,6 +87,9 @@ namespace FakeXiecheng.API
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+            services.AddHttpClient();
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }
 
 

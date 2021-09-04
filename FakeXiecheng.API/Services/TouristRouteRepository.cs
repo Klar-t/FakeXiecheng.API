@@ -149,9 +149,12 @@ namespace FakeXiecheng.API.Services
         }
 
 
-        public async  Task<IEnumerable<Order>> GetOrderByUserId(string userId)
+        public async  Task<PaginationList<Order>> GetOrderByUserId(string userId, int pagesize, int pagenumber)
         {
-           return await _context.Orders.Where(o => o.UserId == userId).ToListAsync();
+            //return await _context.Orders.Where(o => o.UserId == userId).ToListAsync();
+            IQueryable<Order> result = _context.Orders.Where(o => o.UserId == userId);
+            return await PaginationList<Order>.CreateAsync(pagenumber, pagesize, result);
+
         }
 
 

@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 using FakeXiecheng.API.ResourceParameters;
 using Microsoft.AspNetCore.JsonPatch;
 using FakeXiecheng.API.Helper;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace FakeXiecheng.API.Controllers
 {
@@ -22,21 +24,61 @@ namespace FakeXiecheng.API.Controllers
     {
         private ITouristRouteRepository _touristRouteRepository;
         private readonly IMapper _mapper;
+        private readonly IUrlHelper _urlHelper;
 
         //通过构建函数，注入数据仓库的服务
-        public TouristRoutesController(ITouristRouteRepository touristRouteRepository, IMapper mapper)
+        public TouristRoutesController(ITouristRouteRepository touristRouteRepository, IMapper mapper,
+            IUrlHelperFactory urlHelperFactory,
+            IActionContextAccessor actionContextAccessor
+            )
         {
             _touristRouteRepository = touristRouteRepository;
             _mapper = mapper;
+            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
         }
 
-        [HttpGet]
+        private string GenerateTouristRouteResourceURL(
+            [FromQuery] TouristRouteResourceParamaters paramaters,
+            [FromQuery] PaginationResourceParamaters paramatertwo,
+            ResourceUriType type)
+        {
+            return type switch
+            {
+                ResourceUriType.PreviousPage => _urlHelper.Link("GetTouristRoutes",
+                    new
+                    {
+                        keyword = paramaters.Keyword,
+                        rating = paramaters.Rating,
+                        pageNumber = paramatertwo.PageNumber - 1,
+                        pageSize = paramatertwo.PageSize
+                    }),
+                ResourceUriType.NextPage => _urlHelper.Link("GetTouristRoutes",
+                    new
+                    {
+                        keyword = paramaters.Keyword,
+                        rating = paramaters.Rating,
+                        pageNumber = paramatertwo.PageNumber + 1,
+                        pageSize = paramatertwo.PageSize
+                    }),
+                _ => _urlHelper.Link("GetTouristRoutes",
+                    new
+                    {
+                        keyword = paramaters.Keyword,
+                        rating = paramaters.Rating,
+                        pageNumber = paramatertwo.PageNumber,
+                        pageSize = paramatertwo.PageSize
+                    })
+            };
+        }
+
+
+        [HttpGet(Name = "GetTouristRoutes")]
         [HttpHead]
         //public async Task<IActionResult> GetTouristRoutes([FromQuery]int pagenumber,int pagesize)
         //{
         //     return Ok();
         //}
-        public async Task<IActionResult> GerTouristRoutes([FromQuery] TouristRouteResourceParamaters paramaters,
+        public async Task<IActionResult> GetTouristRoutes([FromQuery] TouristRouteResourceParamaters paramaters,
                                                           [FromQuery] PaginationResourceParamaters paramatertwo)
         {
 
@@ -53,6 +95,25 @@ namespace FakeXiecheng.API.Controllers
                 return NotFound("没有旅游路线");
             }
             var touristRouteDto = _mapper.Map<IEnumerable<TouristRouteDto>>(touristRoutesFromRepo);
+            var previousPageLink = touristRoutesFromRepo.HasPrevious 
+                ? GenerateTouristRouteResourceURL(paramaters, paramatertwo, ResourceUriType.PreviousPage) 
+                : null;
+            var nextPageLink = touristRoutesFromRepo.HasNext
+                ? GenerateTouristRouteResourceURL(paramaters, paramatertwo, ResourceUriType.NextPage)
+                : null;
+
+            var paginationMetadata = new
+            {
+                previousPageLink,
+                nextPageLink,
+                totalCount = touristRoutesFromRepo.TotalCount,
+                pageSize = touristRoutesFromRepo.PageSize,
+                currentPage = touristRoutesFromRepo.CurrentPage,
+                totalPages = touristRoutesFromRepo.TotalPages
+            };
+
+            Response.Headers.Add("x-pagination", Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+
             return Ok(touristRouteDto);
         }
 
